@@ -1,4 +1,6 @@
-const { app, BrowserWindow } = require("electron");
+const { app, BrowserWindow, ipcMain } = require("electron");
+const path = require("path");
+const adb = require("./adb");
 
 function createWindow() {
   const win = new BrowserWindow({
@@ -6,12 +8,31 @@ function createWindow() {
     height: 700,
     webPreferences: {
       nodeIntegration: true,
-      contextIsolation: false
-    }
+      contextIsolation: false,
+    },
   });
 
   win.loadURL("http://localhost:3000");
 }
+
+// Listen to IPC from frontend
+ipcMain.handle("check-device", async () => {
+  try {
+    const connected = await adb.checkDeviceConnected();
+    return connected;
+  } catch (err) {
+    return false;
+  }
+});
+
+ipcMain.handle("get-battery-info", async () => {
+  try {
+    const batteryInfo = await adb.getBatteryInfo();
+    return batteryInfo;
+  } catch (err) {
+    return "Error fetching battery info";
+  }
+});
 
 app.whenReady().then(createWindow);
 
