@@ -3,19 +3,56 @@
   "version": "1.0.0",
   "description": "Electron app with Next.js to diagnose Android phones via ADB",
   "main": "main.js",
+  "author": "M Abbas Safi",
+  "license": "MIT",
   "scripts": {
     "dev:next": "next dev",
     "dev:electron": "wait-on tcp:3000 && electron .",
     "dev": "concurrently \"npm run dev:next\" \"npm run dev:electron\"",
-    "build": "next build",
-    "start": "electron ."
+    "build": "next build && next export",
+    "start": "electron .",
+    "package": "electron-forge package",
+    "make": "electron-forge make",
+    "lint": "echo \"No linting configured\""
   },
   "dependencies": {
-    "concurrently": "^8.2.0",
-    "electron": "^26.2.0",
     "next": "^13.5.4",
     "react": "^18.2.0",
-    "react-dom": "^18.2.0",
+    "react-dom": "^18.2.0"
+  },
+  "devDependencies": {
+    "@electron-forge/cli": "^6.2.0",
+    "concurrently": "^8.2.0",
+    "electron": "^26.2.0",
     "wait-on": "^7.0.1"
+  },
+  "config": {
+    "forge": {
+      "packagerConfig": {
+        "icon": "assets/icon" 
+      },
+      "makers": [
+        {
+          "name": "@electron-forge/maker-squirrel",
+          "config": {
+            "name": "mobile_diagnoser"
+          }
+        },
+        {
+          "name": "@electron-forge/maker-zip",
+          "platforms": [
+            "darwin"
+          ]
+        },
+        {
+          "name": "@electron-forge/maker-deb",
+          "config": {}
+        },
+        {
+          "name": "@electron-forge/maker-rpm",
+          "config": {}
+        }
+      ]
+    }
   }
 }
