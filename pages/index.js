@@ -1,11 +1,13 @@
 import { useState } from "react";
 
+const { ipcRenderer } = require("electron");
+
 export default function Home() {
   const [deviceConnected, setDeviceConnected] = useState(false);
   const [batteryInfo, setBatteryInfo] = useState("");
 
   async function checkDevice() {
-    const connected = await window.electron.ipcRenderer.invoke("check-device");
+    const connected = await ipcRenderer.invoke("check-device");
     setDeviceConnected(connected);
   }
 
@@ -14,7 +16,7 @@ export default function Home() {
       alert("No device connected!");
       return;
     }
-    const info = await window.electron.ipcRenderer.invoke("get-battery-info");
+    const info = await ipcRenderer.invoke("get-battery-info");
     setBatteryInfo(info);
   }
 
@@ -27,7 +29,9 @@ export default function Home() {
       <button onClick={fetchBattery} disabled={!deviceConnected}>
         Get Battery Info
       </button>
-      <pre>{batteryInfo}</pre>
+      <pre style={{ whiteSpace: "pre-wrap", background: "#f0f0f0", padding: 10 }}>
+        {batteryInfo}
+      </pre>
     </div>
   );
 }
