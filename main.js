@@ -1,5 +1,4 @@
 const { app, BrowserWindow, ipcMain } = require("electron");
-const path = require("path");
 const adb = require("./adb");
 
 function createWindow() {
@@ -15,7 +14,6 @@ function createWindow() {
   win.loadURL("http://localhost:3000");
 }
 
-// Listen to IPC from frontend
 ipcMain.handle("check-device", async () => {
   try {
     const connected = await adb.checkDeviceConnected();
